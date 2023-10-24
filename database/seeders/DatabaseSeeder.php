@@ -16,11 +16,13 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
         \App\Models\User::factory()->create([
-            'name'      => 'Admin',
-            'email'     => 'admin@gmail.com',
+            'name'              => 'Admin',
+            'email'             => 'admin@gmail.com',
+            'role'              => 'admin',
+            'status'            => true,
             'email_verified_at' => now(),
-            'password'  => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'password'          => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token'    => Str::random(10),
         ]);
     }
 }

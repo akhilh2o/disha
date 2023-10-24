@@ -17,7 +17,15 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('student')->default(false)->comment('if student register for a course than it should be true');
+            $table->string('mobile')->nullable()->default(null);
+            $table->string('father_name')->nullable()->default(null);
+            $table->date('dob')->nullable()->default(null);
+            $table->string('gender')->nullable()->default(null);
+            $table->string('avatar')->nullable()->default(null);
+            $table->string('role')->nullable()->default('student')
+                ->comment('is should be student for the student else admin');
+            $table->boolean('is_insider')->nullable()->default(true);
+            $table->boolean('status')->nullable()->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

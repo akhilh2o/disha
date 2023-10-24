@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Models\Question;
 use Illuminate\Support\Facades\Route;
 
@@ -14,8 +16,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'registerStore'])->name('register.store');
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'authenticate'])->name('authenticate');
+Route::get('logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('payment', [AuthController::class, 'payment'])->name('payment');
+Route::post('payment', [AuthController::class, 'doPayment'])->name('payment.store');
+
+Route::middleware(['auth'])->prefix('student')->name('student.')->group(function () {
+    Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    Route::get('exams', [HomeController::class, 'exams'])->name('exams');
+    Route::get('exam/{exam}/start', [HomeController::class, 'exam'])->name('exam');
+
+    Route::get('exam/{exam}/questions/{question}', [HomeController::class, 'showQuestion'])->name('exam.question.show');
+    Route::post('exam/{exam}/questions/{question}/submit', [HomeController::class, 'submitAnswer'])->name('exam.question.submit');
+
+    Route::get('exam/{exam}/finish', [HomeController::class, 'finishExam'])->name('exam.finish');
+    Route::get('exam/{exam}/result/{user}', [HomeController::class, 'examResult'])->name('exam.result');
+
+
+    Route::get('profile', [HomeController::class, 'profile'])->name('profile');
+    Route::post('profile', [HomeController::class, 'update'])->name('profile.update');
+});
+
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->to(config('app.main_url'));
 });
 
 Route::get('exam', function () {
@@ -24,5 +51,5 @@ Route::get('exam', function () {
 
 Route::get('running', function () {
     $questions =  Question::with('answers')->get();
-    return view('exam.running')->with('questions',$questions);
+    return view('exam.running')->with('questions', $questions);
 });
