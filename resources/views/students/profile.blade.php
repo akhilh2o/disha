@@ -9,7 +9,7 @@
 
     <div class="container page__container">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('student.dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('student.exams') }}">Home</a></li>
             <li class="breadcrumb-item active">Edit Account</li>
         </ol>
         <h1 class="h2">Edit Account</h1>

@@ -9,6 +9,7 @@ class ExamAttempt extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $casts = ['started_at' => 'date', 'finished_at'=>'date'];
 
     public function user()
     {

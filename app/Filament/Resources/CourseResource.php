@@ -7,6 +7,7 @@ use App\Filament\Resources\CourseResource\RelationManagers;
 use App\Models\Category;
 use App\Models\Course;
 use Filament\Forms;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -34,23 +35,25 @@ class CourseResource extends Resource
                     }),
                 Forms\Components\TextInput::make('slug')
                     ->required()
-                    ->hidden()
                     ->readOnly(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'pending'  => 'Pending',
-                        'active'   => 'Active',
-                        'inactive' => 'Inactive',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('price')
-                    ->label('Price (Insider)')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('price_for_other')
-                    ->label('Price (Outsider)')
-                    ->required()
-                    ->numeric(),
+                Grid::make(3)
+                    ->schema([
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'pending'  => 'Pending',
+                                'active'   => 'Active',
+                                'inactive' => 'Inactive',
+                            ])
+                            ->required(),
+                        Forms\Components\TextInput::make('price')
+                            ->label('Price (Insider)')
+                            ->required()
+                            ->numeric(),
+                        Forms\Components\TextInput::make('price_for_other')
+                            ->label('Price (Outsider)')
+                            ->required()
+                            ->numeric(),
+                    ]),
                 Forms\Components\Textarea::make('short_description')
                     ->columnSpan('full'),
                 Forms\Components\RichEditor::make('long_description')

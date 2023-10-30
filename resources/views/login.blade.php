@@ -41,7 +41,7 @@
                                 <div class="form-group">
                                     <label class="form-label" for="email">Your email:</label>
                                     <input type="email" id="email" name="email"
-                                        placeholder="Enter your email address..." value="{{ old(" email") }}"
+                                        placeholder="Enter your email address..." value="{{ old("email") }}"
                                         @class(['form-control','is-invalid'=>$errors->has('email')])>
                                     @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -58,7 +58,6 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </div>
-
                         </div>
                     </div>
                 </form>

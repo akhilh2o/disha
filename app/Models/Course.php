@@ -9,18 +9,25 @@ class Course extends Model
 {
     use HasFactory;
     protected $guarded = [];
-
-
     public function image()
     {
         if ($this->image) {
-            return asset('storage/' . $this->image);
+            if (app()->environment('local')) {
+                return asset('storage/' . $this->image);
+            } else {
+                return url('storage/app/public/' . $this->image);
+            }
         } else {
             return 'https://placehold.co/500x300';
         }
     }
 
-    public function exams(){
+    public function exams()
+    {
         return $this->hasMany(Exam::class);
+    }
+    public function exam()
+    {
+        return $this->hasOne(Exam::class);
     }
 }

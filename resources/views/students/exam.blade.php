@@ -47,7 +47,7 @@
                     <div class="container">
 
                         <!-- Brand -->
-                        <a href="{{ route('student.dashboard') }}" class="navbar-brand">
+                        <a href="{{ route('student.exams') }}" class="navbar-brand">
                             <img src="{{ asset('assets/frontend/images/logo/white.svg') }}" class="mr-2"
                                 alt="{{ config('app.name') }}" />
                             <span class="d-none d-xs-md-block">Disha College</span>
@@ -217,7 +217,7 @@
 
                     <div class="container-fluid page__container">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('student.dashboard') }}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('student.exams') }}">Home</a></li>
                             <li class="breadcrumb-item active">Exam</li>
                         </ol>
                         <div class="media mb-headings align-items-center">
@@ -226,7 +226,8 @@
                             </div>
                             <div class="media-body">
                                 <h1 class="h2">{{ $exam?->course?->name }}</h1>
-                                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark: {{ $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
+                                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark: {{
+                                    $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
                             </div>
                         </div>
                         <div class="card-group">
@@ -290,16 +291,16 @@
 
                                 <div class="card-footer">
                                     @if($question->isNot($exam->questions->last()))
-                                    <a href="{{ route('student.exam.question.show', ['exam' => $exam, 'question' => $question ]) }}"
-                                        class="btn btn-white">Skip</a>
+                                    <a href="{{ route('student.exam.question.show', ['exam' => $exam, 'question' => $question ]) }}" class="btn btn-white">Skip</a>
                                     <button type="submit" class="btn btn-success float-right">Submit <i
-                                            class="material-icons btn__icon--right">send</i> </button>
+                                            class="material-icons btn__icon--right">send</i></button>
                                     @else
-                                    <a href="{{ route('student.exam.question.show', ['exam' => $exam, 'question' => $question  ]) }}"
-                                        class="btn btn-white">Previous</a>
-                                    <a href="{{ route('student.exam.finish', $exam) }}"
-                                        class="btn btn-success float-right">Finish Exam <i
-                                            class="material-icons btn__icon--right">send</i></a>
+                                    <a href="{{ route('student.exam.question.previous', ['exam' => $exam, 'question' => $question ]) }}" class="btn btn-white">Previous</a>
+                                    <button type="submit" class="btn btn-success float-right">Finish <i
+                                            class="material-icons btn__icon--right">send</i></button>
+                                    {{-- <a href="{{ route('student.exam.finish', $exam) }}"
+                                        class="btn btn-success float-right">Finish <i
+                                            class="material-icons btn__icon--right">send</i></a> --}}
                                     @endif
                                 </div>
                             </form>

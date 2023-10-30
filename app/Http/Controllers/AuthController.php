@@ -63,7 +63,7 @@ class AuthController extends Controller
         Auth::login($user);
         if (auth()->check()) {
             $request->session()->regenerate();
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.exams');
         }
 
         return back()->withErrors('something went wrong!');
@@ -71,7 +71,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         if (auth()->check()) {
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.exams');
         }
         if ($request?->course) {
             $course =  $this->getCourse($request?->course);
@@ -102,7 +102,7 @@ class AuthController extends Controller
             ]);
 
             $request->session()->regenerate();
-            return redirect()->route('student.dashboard');
+            return redirect()->route('student.exams');
         }
 
         return back()->withErrors([
@@ -159,7 +159,7 @@ class AuthController extends Controller
                 $data['created_at']          = $response['created_at'];
 
                 $user->lastest_course->update(['payment_status' => true, 'payment' => $data]);
-                return to_route('student.dashboard')->with('success', 'Payment successful, you can take the exam now.');
+                return to_route('student.exams')->with('success', 'Payment successful, you can take the exam now.');
             } catch (\Exception $e) {
                 return redirect()->back()->withErrors($e->getMessage());
             }

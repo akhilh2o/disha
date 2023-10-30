@@ -9,7 +9,7 @@
 
     <div class="container page__container">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ route('student.dashboard') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('student.certificates') }}">Home</a></li>
             <li class="breadcrumb-item active">My Certificates</li>
         </ol>
         <div class="media mb-headings align-items-center">
@@ -19,18 +19,18 @@
 
         </div>
         <div class="card-columns">
-            @forelse ($user->courses ?? [] as $courses)
+            @forelse ($studentCourse ?? [] as $studentCourse)
             <div class="card">
                 <div class="card-header">
                     <div class="media">
                         <div class="media-left">
                             <a href="javascript:void(0)">
-                                <img src="{{ $courses?->course?->image() }}" alt="{{ $courses?->course?->name }}"
-                                    width="100" class="rounded">
+                                <img src="{{ $studentCourse?->course?->image() }}"
+                                    alt="{{ $studentCourse?->course?->name }}" width="100" class="rounded">
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="card-title m-0">{{ $courses?->course?->name }}</h4>
+                            <h4 class="card-title m-0">{{ $studentCourse?->course?->name }}</h4>
                             <small class="text-muted">Exam Status: complete</small>
                         </div>
                     </div>
@@ -41,8 +41,11 @@
                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="card-footer bg-white">
-                    <a href="javascript:void(0)" class="btn btn-success btn-sm">Download <i
-                            class="material-icons btn__icon--right">check</i></a>
+                    <a href="{{ route('student.exam.result',[$studentCourse?->course?->exam,auth()->user()]) }}"
+                        class="btn btn-success btn-sm">Result <i class="material-icons btn__icon--right"><span
+                                class="material-symbols-outlined">
+                                card_membership
+                            </span></i></a>
                 </div>
             </div>
             @empty

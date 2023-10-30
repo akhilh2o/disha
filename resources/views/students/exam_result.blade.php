@@ -19,27 +19,32 @@
             </div>
             <div class="media-body">
                 <h1 class="h2">{{ $exam?->name }}</h1>
-                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark: {{ $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
+                <p class="text-muted">submitted at {{ $exam?->attempt?->finished_at?->diffForHumans() }}</p>
             </div>
-            <div class="media-right">
-                <a href="{{ route('student.exam',[$exam]) }}" class="btn btn-primary">Take Exam <i
-                        class="material-icons btn__icon--right">play_circle_outline</i></a>
-            </div>
+
         </div>
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Detail</h4>
+                <h4 class="card-title">Result</h4>
             </div>
             <div class="card-body media align-items-center">
                 <div class="media-body">
-                    {{-- <h4 class="mb-0">5.8</h4>
-                    <span class="text-muted-light">Good</span> --}}
-                    <p>{!! $exam->description !!}</p>
+                    <p class="text-muted-light">Max / Obtain Mark</p>
+                    <h4 class="mb-0">{{ $exam?->maximum_mark }}/{{ $exam?->attempt?->score }}</h4>
+                    @if ($exam?->attempt?->score>=$exam?->passing_mark)
+                    <span class="text-muted-light">Pass</span>
+                    @else
+                    <span class="text-muted-light">Fail</span>
+                    @endif
+                </div>
+                <div class="media-right">
+                    <a href="{{ route('student.exam.result.download',[$exam,auth()->user()]) }}"
+                        class="btn btn-primary">Download <i class="material-icons btn__icon--right">cloud_download</i></a>
                 </div>
             </div>
         </div>
         @empty
-        <div>Exam not found.</div>
+        <div>Result not found.</div>
         @endforelse
     </div>
 </div>

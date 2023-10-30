@@ -64,7 +64,7 @@
                     <div class="container">
 
                         <!-- Brand -->
-                        <a href="{{ route('student.dashboard') }}" class="navbar-brand">
+                        <a href="{{ route('student.exams') }}" class="navbar-brand">
                             <img src="{{ asset('assets/frontend/images/logo/white.svg') }}" class="mr-2"
                                 alt="{{ config('app.name') }}" />
                             <span class="d-none d-xs-md-block">Disha College</span>
@@ -76,7 +76,7 @@
                         <ul class="nav navbar-nav flex-nowrap">
 
                             <!-- Notifications dropdown -->
-                            <li class="nav-item dropdown dropdown-notifications dropdown-menu-sm-full">
+                            {{-- <li class="nav-item dropdown dropdown-notifications dropdown-menu-sm-full">
                                 <button class="nav-link btn-flush dropdown-toggle" type="button" data-toggle="dropdown"
                                     data-dropdown-disable-document-scroll data-caret="false">
                                     <i class="material-icons">notifications</i>
@@ -197,7 +197,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li> --}}
                             <!-- // END Notifications dropdown -->
                             <!-- User dropdown -->
                             <li class="nav-item dropdown ml-1 ml-md-3">
@@ -206,9 +206,10 @@
                                     <img src="{{ asset('image/student/'.auth()->user()->avatar) }}" alt="Avatar"
                                         class="rounded-circle" width="40">
                                     @else
-                                    <img src="{{ asset('assets/frontend/images/people/50/guy-6.jpg') }}" alt="Avatar"
+                                    <img src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}" alt="Avatar"
                                         class="rounded-circle" width="40">
                                     @endif
+
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="{{ route('student.profile') }}">
@@ -240,14 +241,13 @@
 
                         <div class="navbar-collapse collapse" id="navbarsExample03">
                             <ul class="nav navbar-nav">
-                                {{-- <li class="nav-item active"> --}}
-                                <li class="nav-item">
-                                    <a href="{{ route('student.dashboard') }}" class="nav-link">My Certificates</a>
-                                </li>
-                                <li class="nav-item">
+                                <li @class(['nav-item', 'active'=> request()->segment('2')=='exams'])>
                                     <a href="{{ route('student.exams') }}" class="nav-link">Exams</a>
                                 </li>
-                                <li class="nav-item">
+                                <li @class(['nav-item', 'active'=> request()->segment('2')=='certificates'])>
+                                    <a href="{{ route('student.certificates') }}" class="nav-link">My Certificates</a>
+                                </li>
+                                <li @class(['nav-item', 'active'=> request()->segment('2')=='profile'])>
                                     <a href="{{ route('student.profile') }}" class="nav-link">Profile</a>
                                 </li>
                                 <li class="nav-item">
