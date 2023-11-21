@@ -16,18 +16,14 @@ class AuthController extends Controller
     protected Course $course;
     public function register(Request $request)
     {
-        if ($request?->course) {
-            $course = $this->getCourse($request?->course);
-            if ($course) {
-                return view('register')->with('course', $course);
-            }
-        }
-        return redirect()->to(config('app.main_url'));
+        $courses = $this->getCourses();
+        return view('register')->with('courses', $courses);
+
     }
     public function registerStore(Request $request)
     {
         $request->validate([
-            'student_type'   => 'required',
+            'course_id'      => 'required',
             'name'           => 'required',
             'email'          => 'required|email|unique:users,email',
             'mobile'         => 'required',
@@ -36,9 +32,6 @@ class AuthController extends Controller
             'gender'         => 'required',
         ]);
 
-        if ($request->student_type == 'internal') {
-            return to_route('login');
-        }
         $user = new User;
         $user->name        = $request->name;
         $user->email       = $request->email;
@@ -53,10 +46,9 @@ class AuthController extends Controller
 
 
         $user->save();
-        $course = $this->getCourse($request?->course);
 
         $user->courses()->create([
-            'course_id'        => $course->id,
+            'course_id'        => $request->course_id,
             'payment_status'   => false,
         ]);
 
@@ -128,6 +120,12 @@ class AuthController extends Controller
         return Course::where('slug', $slug)
             ->where('status', 'active')
             ->first();
+    }
+    // helper function
+    public function getCourses()
+    {
+        return Course::where('status', 'active')
+            ->get();
     }
 
     public function payment()

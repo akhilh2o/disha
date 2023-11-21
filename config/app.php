@@ -57,7 +57,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'main_url' => env('MAIN_URL', 'http://dishacollege.com'),
+    'main_url' => env('MAIN_URL', 'http://new.dishacollege.com'),
 
     'asset_url' => env('ASSET_URL'),
 

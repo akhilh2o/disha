@@ -12,43 +12,20 @@
             <div class="card card-body">
                 <form action="{{ route('register.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="course" value="{{ $course?->slug }}">
                     <div class="row">
-                        <div class="col-lg-4">
-                            <h4 class="card-title">{{ $course?->name }} -</h4>
-                            <p>{{ $course?->short_description }}</p>
-                            <div class="form-row">
-                                <div class="col-8 mb-3">
-                                    <strong> Sub total -</strong>
-                                </div>
-                                <div class="col-4 mb-3">
-                                    <strong> {{ number_format($course?->price_for_other,2) }}</strong>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="col-8 mb-3">
-                                    <strong> Total -</strong>
-                                </div>
-                                <div class="col-4 mb-3">
-                                    <strong> {{ number_format($course?->price_for_other,2) }}</strong>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8">
+                        <div class="col-lg-12 col-md-12 col-12">
                             <div class="form-group">
-                                <label class="form-label" for="student_type">Student Type </label> <span
-                                    class="text-danger">
-                                    (<small>if you have login credential then select internal.</small>)
+                                <label class="form-label" for="course_id">Course </label>
+                                 <span class="text-danger">(<small>select course the registration.</small>)
                                 </span>
-                                <select id="student_type" name="student_type" @class(['form-control','is-invalid'=>
-                                    $errors->has('student_type')])
-                                    required>
-                                    <option value=""> Student Type</option>
-                                    <option value="internal">Internal</option>
-                                    <option value="external" @selected(old('student_type')=='external' )>
-                                        External</option>
+                                <select id="course_id" name="course_id" 
+                                @class(['form-control','is-invalid'=> $errors->has('course_id')]) required>
+                                    <option value=""> Course </option>
+                                    @foreach ($courses ?? [] as $course)
+                                    <option value="{{ $course?->id }}" @selected(old('course_id')==$course?->id)>{{ $course?->name }}</option>
+                                    @endforeach
                                 </select>
-                                @error('student_type')
+                                @error('course_id')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -146,8 +123,7 @@
 
         <div class="container page__container text-center">
             <div class="footer">
-                Copyright &copy; {{ date('Y') }} - <a href="{{ route('login') }}">{{ config('app.name')
-                    }}</a>
+                Copyright &copy; {{ date('Y') }} - <a href="{{ route('login') }}">{{ config('app.name') }}</a>
             </div>
         </div>
     </div>
@@ -156,12 +132,12 @@
 
 @push('scripts')
 
-<script>
+{{-- <script>
     $('#student_type').on('change', function(){
         if($(this).val()=='internal'){
             let url = '{{ route('login') }}'+'?course='+'{{ $course?->slug }}';
             $('<a href="'+url+'" target="blank"></a>')[0].click();
         }
     });
-</script>
+</script> --}}
 @endpush
