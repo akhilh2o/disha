@@ -18,10 +18,10 @@ class HomeController extends Controller
 {
     public function exams(Request $request)
     {
-        $user = auth()->user();
+        $user = User::find(auth()->id());
         $user->load('lastest_course');
         if ($user?->lastest_course?->payment_status == false) {
-            return to_route('payment');
+            return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
         }
 
         $exams = Exam::where('course_id', $user->lastest_course->course_id)

@@ -18,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'registerStore'])->name('register.store');
+
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'authenticate'])->name('authenticate');
+
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('payment', [AuthController::class, 'payment'])->name('payment');
