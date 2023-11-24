@@ -53,6 +53,26 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="father_name">Father Name</label>
+                                        <input type="text" id="father_name" name="father_name" placeholder="Father name"
+                                            value="{{ auth()->check() ? auth()?->user()?->father_name : old('father_name') }}"
+                                            required="" @class(['form-control', 'is-invalid' => $errors->has('father_name')])>
+                                        @error('father_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="mother_name">Mother Name</label>
+                                        <input type="text" id="mother_name" name="mother_name" placeholder="Mother name"
+                                            value="{{ auth()->check() ? auth()?->user()?->mother_name : old('mother_name') }}"
+                                            required="" @class(['form-control', 'is-invalid' => $errors->has('mother_name')])>
+                                        @error('mother_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="mobile">Mobile</label>
                                         <input type="number" name="mobile" id="mobile" placeholder="Mobile"
                                             required=""
@@ -62,17 +82,6 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-12 col-md-6 mb-3">
-                                        <label class="form-label" for="father_name">Father Name</label>
-                                        <input type="text" id="father_name" name="father_name" placeholder="Father name"
-                                            value="{{ auth()->check() ? auth()?->user()?->father_name : old('father_name') }}"
-                                            required="" @class(['form-control', 'is-invalid' => $errors->has('father_name')])>
-                                        @error('father_name')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="dob">Date of Birth</label>
                                         <input id="dob" type="hidden" placeholder="DOB" data-toggle="flatpickr"
@@ -88,6 +97,8 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                </div>
+                                <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="gender">Gender</label>
                                         <div class="custom-controls-stacked form-row">
@@ -116,8 +127,8 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="custom-control custom-checkbox">
-                                        <input class="custom-control-input" type="checkbox" value="1" id="terms"
-                                            name="terms" required="" checked="">
+                                        <input class="custom-control-input" type="checkbox" value="1"
+                                            id="terms" name="terms" required="" checked="">
                                         <label class="custom-control-label" for="terms">
                                             Agree to terms and conditions
                                         </label>

@@ -85,8 +85,7 @@
 
         <div class="container page__container text-center">
             <div class="footer">
-                Copyright &copy; {{ date('Y') }} - <a href="{{ route('login') }}">{{ config('app.name')
-                    }}</a>
+                Copyright &copy; {{ date('Y') }} - <a href="{{ route('login') }}">{{ config('app.name') }}</a>
             </div>
         </div>
     </div>

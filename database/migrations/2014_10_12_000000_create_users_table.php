@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('mobile')->nullable()->default(null);
             $table->string('father_name')->nullable()->default(null);
+            $table->string('mother_name')->nullable()->default(null);
             $table->date('dob')->nullable()->default(null);
             $table->string('gender')->nullable()->default(null);
             $table->string('avatar')->nullable()->default(null);

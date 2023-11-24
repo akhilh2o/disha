@@ -23,6 +23,8 @@ class AuthController extends Controller
             if ($user?->lastest_course) {
                 if ($user?->lastest_course?->payment_status == false) {
                     return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
+                }else{
+                    return to_route('student.exams');
                 }
             }
         }
@@ -53,6 +55,7 @@ class AuthController extends Controller
             $user->password           = Hash::make(Str::random(8));
             $user->is_insider         = false;
             $user->role               = 'student';
+            $user->status             = 1;
             $user->email_verified_at  = now();
         }
 
@@ -77,7 +80,7 @@ class AuthController extends Controller
             return redirect()->route('student.exams');
         }
 
-        return back()->withErrors('something went wrong!');
+        return back()->withErrors('Something went wrong!');
     }
     // login related method
     public function login(Request $request)

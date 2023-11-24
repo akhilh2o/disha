@@ -49,6 +49,8 @@ class UserResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('father_name')
                     ->maxLength(255),
+                Forms\Components\TextInput::make('mother_name')
+                    ->maxLength(255),
                 Forms\Components\DatePicker::make('dob'),
                 Forms\Components\Select::make('gender')
                     ->options([
@@ -78,6 +80,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('mobile')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('father_name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('mother_name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('dob')
                     ->date()

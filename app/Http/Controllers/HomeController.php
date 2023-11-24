@@ -16,12 +16,18 @@ use setasign\Fpdi\Fpdi;
 
 class HomeController extends Controller
 {
+
     public function exams(Request $request)
     {
         $user = User::find(auth()->id());
         $user->load('lastest_course');
         if ($user?->lastest_course?->payment_status == false) {
             return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
+        }
+
+        if ($user->is_insider) {
+            // return $user;
+            return to_route('student.certificates');
         }
 
         $exams = Exam::where('course_id', $user->lastest_course->course_id)
@@ -35,13 +41,23 @@ class HomeController extends Controller
 
     public function certificates()
     {
-        $studentCourse = StudentCourse::where('student_id', auth()->id())
-            ->with('course')
-            ->with('course.exam.attempt')
-            ->whereHas('course.exam.attempt')
-            ->get();
+        $user = User::find(auth()->id());
+        // if loggedin user is insider
+        if ($user->is_insider) {
+            $studentCourse = StudentCourse::where('student_id', auth()->id())
+                ->with('course')
+                ->with('course.exam')
+                ->get();
+            return view('students.insider.certificate')->with('studentCourse', $studentCourse);
+        } else {
+            $studentCourse = StudentCourse::where('student_id', auth()->id())
+                ->with('course')
+                ->with('course.exam.attempt')
+                ->whereHas('course.exam.attempt')
+                ->get();
 
-        return view('students.dashboard')->with('studentCourse', $studentCourse);
+            return view('students.dashboard')->with('studentCourse', $studentCourse);
+        }
     }
 
     public function exam(Exam $exam)
@@ -51,7 +67,6 @@ class HomeController extends Controller
         return view('students.exam')->with('exam', $exam)
             ->with('question', $question);
     }
-
 
     public function showQuestion(Exam $exam, Question $question)
     {
@@ -67,6 +82,7 @@ class HomeController extends Controller
             return redirect()->route('student.exam.finish', [$exam]);
         }
     }
+
     public function previousQuestion(Exam $exam, Question $question)
     {
         $question = $exam->questions()
@@ -176,16 +192,22 @@ class HomeController extends Controller
         return redirect()->route('student.exam', $exam)
             ->withErrors('You have not completed all the questions.');
     }
+
     public function resultDownload(Exam $exam, User $user)
     {
-        $exam = Exam::find($exam->id)
-            ->with('course')
-            ->with('attempt')
-            ->whereHas('attempt', function ($query) {
-                $query->where('user_id', auth()->id());
-                $query->where('is_completed', true);
-            })
-            ->first();
+        if ($user->is_insider) {
+            $exam->load('course');
+            $exam->load('attempt');
+        } else {
+            $exam = Exam::find($exam->id)
+                ->with('course')
+                ->with('attempt')
+                ->whereHas('attempt', function ($query) {
+                    $query->where('user_id', auth()->id());
+                    $query->where('is_completed', true);
+                })
+                ->first();
+        }
 
         if ($exam) {
             $filePath = public_path("certificate/sample.pdf");
@@ -201,7 +223,6 @@ class HomeController extends Controller
 
     public function fillPDFFile($exam, $file, $outputFilePath)
     {
-
         // dd($exam);
         $fpdi = new FPDI;
 
@@ -216,12 +237,12 @@ class HomeController extends Controller
 
             $fpdi->SetFont("helvetica", "B", 10);
             // $fpdi->SetTextColor(153, 0, 153);
-            $fpdi->Text(106, 111.5, strtoupper(auth()->user()?->name));
-            $fpdi->Text(106, 122, strtoupper(auth()->user()?->father_name));
-            $fpdi->Text(106, 133, "");
-            $fpdi->Text(106, 143.5, strtoupper(auth()->user()?->dob));
+            $fpdi->Text(106, 111.5, strtoupper(auth()?->user()?->name));
+            $fpdi->Text(106, 122, strtoupper(auth()?->user()?->father_name));
+            $fpdi->Text(106, 133, strtoupper(auth()?->user()?->mother_name));
+            $fpdi->Text(106, 143.5, strtoupper(auth()?->user()?->dob));
             $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
-            $fpdi->Text(106, 164.5, "000".auth()->user()->id);
+            $fpdi->Text(106, 164.5, "000" . auth()->user()->id);
             // $fpdi->SetFont("helvetica", "B", 9);
             // $fpdi->Text(176, 180, "Disha Computer Education");
             $fpdi->SetFont("helvetica", "B", 11);

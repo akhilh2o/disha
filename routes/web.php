@@ -41,7 +41,6 @@ Route::middleware(['auth'])->prefix('student')->name('student.')->group(function
 
     Route::get('exam/{exam}/result/{user}/download', [HomeController::class, 'resultDownload'])->name('exam.result.download');
 
-
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
     Route::post('profile', [HomeController::class, 'update'])->name('profile.update');
 });

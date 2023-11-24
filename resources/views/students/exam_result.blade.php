@@ -14,7 +14,7 @@
         @forelse($exams ?? [] as $exam)
         <div class="media mb-headings align-items-center">
             <div class="media-left">
-                <img src="assets/images/vuejs.png" alt="" width="80" class="rounded">
+                {{-- <img src="assets/images/vuejs.png" alt="" width="80" class="rounded"> --}}
                 <img src="{{ $exam?->course?->image() }}" alt="{{ $exam?->name }}" width="80" class="rounded">
             </div>
             <div class="media-body">

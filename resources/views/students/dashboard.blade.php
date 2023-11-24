@@ -31,7 +31,7 @@
                         </div>
                         <div class="media-body">
                             <h4 class="card-title m-0">{{ $studentCourse?->course?->name }}</h4>
-                            <small class="text-muted">Exam Status: complete</small>
+                            <small class="text-muted">Exam Status: Completed</small>
                         </div>
                     </div>
                 </div>
