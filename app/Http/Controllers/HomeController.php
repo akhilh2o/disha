@@ -62,21 +62,31 @@ class HomeController extends Controller
 
     public function exam(Exam $exam)
     {
+        $user = auth()->user(); // Get the logged-in user
         $exam->load('course');
+        $exam->load('questions');
+        $attemptedQuestions = $this->attemptedQuestions($exam, $user);
         $question = $exam->questions()->with('answers')->first();
+        $questionAnswer = $this->questionAnswer($question, $exam);
         return view('students.exam')->with('exam', $exam)
-            ->with('question', $question);
+            ->with('question', $question)
+            ->with('attemptedQuestions', $attemptedQuestions)
+            ->with('questionAnswer', $questionAnswer);
     }
 
     public function showQuestion(Exam $exam, Question $question)
     {
+        $user = auth()->user(); // Get the logged-in user
+        $attemptedQuestions = $this->attemptedQuestions($exam, $user);
+        // getting next question that current exam
         $question = $exam->questions()
-            ->where('id', '>', $question->id) // assuming you have an 'order' field for question order
+            ->where('id', '>', $question->id)
             ->orderBy('id', 'asc')
             ->first();
 
+        $questionAnswer = $this->questionAnswer($question, $exam);
         if ($question) {
-            return view('students.exam', compact('exam', 'question'));
+            return view('students.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
         } else {
             // There are no more questions; you can redirect to a finish page or exam summary.
             return redirect()->route('student.exam.finish', [$exam]);
@@ -85,13 +95,16 @@ class HomeController extends Controller
 
     public function previousQuestion(Exam $exam, Question $question)
     {
+        $user = auth()->user(); // Get the logged-in user
+        $attemptedQuestions = $this->attemptedQuestions($exam, $user);
+        // getting previous question that current exam
         $question = $exam->questions()
-            ->where('id', '<', $question->id) // assuming you have an 'order' field for question order
+            ->where('id', '<', $question->id)
             ->orderBy('id', 'asc')
             ->first();
-
+        $questionAnswer = $this->questionAnswer($question, $exam);
         if ($question) {
-            return view('students.exam', compact('exam', 'question'));
+            return view('students.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
         } else {
             // There are no more questions; you can redirect to a finish page or exam summary.
             return redirect()->route('student.exam.finish', [$exam]);
@@ -114,6 +127,9 @@ class HomeController extends Controller
 
         $studentExamAnswer = StudentExamAnswer::where('student_id', auth()->id())
             ->where('question_id', $question->id)
+            ->whereHas('question', function ($query) use ($exam) {
+                $query->where('exam_id', $exam->id);
+            })
             ->first();
 
         if (!$studentExamAnswer) {
@@ -140,10 +156,7 @@ class HomeController extends Controller
         $user = auth()->user(); // Get the logged-in user
 
         // Check if the user has attempted all questions in the exam
-        $attemptedQuestions = StudentExamAnswer::where('student_id', $user->id)
-            ->whereHas('question', function ($query) use ($exam) {
-                $query->where('exam_id', $exam->id);
-            })->count();
+        $attemptedQuestions = $this->attemptedQuestions($exam, $user);
 
         $totalScore = StudentExamAnswer::where('student_id', $user->id)
             ->whereHas('question', function ($query) use ($exam) {
@@ -291,5 +304,24 @@ class HomeController extends Controller
         auth()->user()->update($data);
 
         return redirect()->back()->withSuccess("Profile has been updated!");
+    }
+
+    // helper functions 
+    public function attemptedQuestions(Exam $exam, User $user)
+    {
+        return StudentExamAnswer::where('student_id', $user->id)
+            ->whereHas('question', function ($query) use ($exam) {
+                $query->where('exam_id', $exam->id);
+            })->count();
+    }
+
+    public function questionAnswer(Question $question, Exam $exam)
+    {
+        return StudentExamAnswer::where('student_id', auth()->id())
+            ->where('question_id', $question->id)
+            ->whereHas('question', function ($query) use ($exam) {
+                $query->where('exam_id', $exam->id);
+            })
+            ->first();
     }
 }

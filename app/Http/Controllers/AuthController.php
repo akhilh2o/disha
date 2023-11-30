@@ -41,6 +41,7 @@ class AuthController extends Controller
             'email'          => 'required|email|unique:users,email,'.$request->user_id,
             'mobile'         => 'required',
             'father_name'    => 'required',
+            'mother_name'    => 'required',
             'dob'            => 'required',
             'gender'         => 'required',
         ]);
@@ -63,6 +64,7 @@ class AuthController extends Controller
         $user->email              = $request->email;
         $user->mobile             = $request->mobile;
         $user->father_name        = $request->father_name;
+        $user->mother_name        = $request->mother_name;
         $user->dob                = $request->dob;
         $user->gender             = $request->gender;
 

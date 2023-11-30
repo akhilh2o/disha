@@ -59,7 +59,7 @@
                         <ul class="nav navbar-nav flex-nowrap">
 
                             <!-- Notifications dropdown -->
-                            <li class="nav-item dropdown dropdown-notifications dropdown-menu-sm-full">
+                            {{-- <li class="nav-item dropdown dropdown-notifications dropdown-menu-sm-full">
                                 <button class="nav-link btn-flush dropdown-toggle" type="button" data-toggle="dropdown"
                                     data-dropdown-disable-document-scroll data-caret="false">
                                     <i class="material-icons">notifications</i>
@@ -180,13 +180,13 @@
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </li> --}}
                             <!-- // END Notifications dropdown -->
                             <!-- User dropdown -->
                             <li class="nav-item dropdown ml-1 ml-md-3">
-                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"><img
-                                        src="{{ asset('assets/frontend/images/people/50/guy-6.jpg') }}" alt="Avatar"
-                                        class="rounded-circle" width="40"></a>
+                                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"
+                                    role="button"><img src="{{ asset('assets/frontend/images/people/50/guy-6.jpg') }}"
+                                        alt="Avatar" class="rounded-circle" width="40"></a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="{{ route('student.profile') }}">
                                         <i class="material-icons">person</i>Profile
@@ -222,12 +222,13 @@
                         </ol>
                         <div class="media mb-headings align-items-center">
                             <div class="media-left">
-                                <img src="{{ $exam?->course?->image() }}" alt="" width="80" class="rounded">
+                                <img src="{{ $exam?->course?->image() }}" alt="" width="80"
+                                    class="rounded">
                             </div>
                             <div class="media-body">
                                 <h1 class="h2">{{ $exam?->course?->name }}</h1>
-                                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark: {{
-                                    $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
+                                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark:
+                                    {{ $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
                             </div>
                         </div>
                         <div class="card-group">
@@ -239,8 +240,8 @@
                             </div>
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <h4 class="text-success mb-0"><strong>3</strong></h4>
-                                    <small class="text-muted-light">ATTEMP</small>
+                                    <h4 class="text-success mb-0"><strong>{{ $attemptedQuestions }}</strong></h4>
+                                    <small class="text-muted-light">ATTEMPTED</small>
                                 </div>
                             </div>
                             {{-- <div class="card">
@@ -251,7 +252,9 @@
                             </div> --}}
                             <div class="card">
                                 <div class="card-body text-center">
-                                    <h4 class="text-primary mb-0"><strong>17</strong></h4>
+                                    <h4 class="text-primary mb-0">
+                                        <strong>{{ $exam->questions->count() - $attemptedQuestions }}</strong>
+                                    </h4>
                                     <small class="text-muted-light">LEFT</small>
                                 </div>
                             </div>
@@ -275,30 +278,35 @@
                                 @csrf
                                 <div class="card-body">
                                     @foreach ($question->answers as $answer)
-                                    <div class="form-group">
-                                        <div class="custom-controls-stacked">
-                                            <div class="custom-control custom-radio">
-                                                <input id="radio{{ $loop->iteration }}" type="radio"
-                                                    class="custom-control-input" value="{{ $answer?->id }}"
-                                                    name="answer" required>
-                                                <label for="radio{{ $loop->iteration }}" class="custom-control-label">
-                                                    {{ $answer?->text }}</label>
+                                        <div class="form-group">
+                                            <div class="custom-controls-stacked">
+                                                <div class="custom-control custom-radio">
+                                                    <input id="radio{{ $loop->iteration }}" type="radio"
+                                                        class="custom-control-input" value="{{ $answer?->id }}"
+                                                        name="answer" @disabled($questionAnswer)
+                                                        @checked($questionAnswer && $questionAnswer?->answer == $answer?->text) required>
+                                                    <label for="radio{{ $loop->iteration }}" class="custom-control-label">{{ $answer?->text }}</label>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     @endforeach
                                 </div>
+                                @if ($questionAnswer)
+                                    <input type="hidden" name="answer" value="{{ $answer?->id }}">
+                                @endif
 
                                 <div class="card-footer">
-                                    @if($question->isNot($exam->questions->last()))
-                                    <a href="{{ route('student.exam.question.show', ['exam' => $exam, 'question' => $question ]) }}" class="btn btn-white">Skip</a>
-                                    <button type="submit" class="btn btn-success float-right">Submit <i
-                                            class="material-icons btn__icon--right">send</i></button>
+                                    @if ($question->isNot($exam->questions->last()))
+                                        <a href="{{ route('student.exam.question.show', ['exam' => $exam, 'question' => $question]) }}"
+                                            class="btn btn-white">Skip</a>
+                                        <button type="submit" class="btn btn-success float-right">Submit <i
+                                                class="material-icons btn__icon--right">send</i></button>
                                     @else
-                                    <a href="{{ route('student.exam.question.previous', ['exam' => $exam, 'question' => $question ]) }}" class="btn btn-white">Previous</a>
-                                    <button type="submit" class="btn btn-success float-right">Finish <i
-                                            class="material-icons btn__icon--right">send</i></button>
-                                    {{-- <a href="{{ route('student.exam.finish', $exam) }}"
+                                        <a href="{{ route('student.exam.question.previous', ['exam' => $exam, 'question' => $question]) }}"
+                                            class="btn btn-white">Previous</a>
+                                        <button type="submit" class="btn btn-success float-right">Finish <i
+                                                class="material-icons btn__icon--right">send</i></button>
+                                        {{-- <a href="{{ route('student.exam.finish', $exam) }}"
                                         class="btn btn-success float-right">Finish <i
                                             class="material-icons btn__icon--right">send</i></a> --}}
                                     @endif

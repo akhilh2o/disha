@@ -387,7 +387,6 @@
             </div>
 
             <div class="page ">
-
                 <div class="container page__container">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="fixed-student-dashboard.html">Home</a></li>
@@ -1047,10 +1046,10 @@
                                     </a>
                                 </li>
                                 <!-- <li class="sidebar-menu-item">
-        <a class="sidebar-menu-button" href="fixed-ui-modals.html">
-          <span class="sidebar-menu-text">- Modals</span>
-        </a>
-      </li> -->
+                                <a class="sidebar-menu-button" href="fixed-ui-modals.html">
+                                <span class="sidebar-menu-text">- Modals</span>
+                                </a>
+                            </li> -->
                                 <li class="sidebar-menu-item">
                                     <a class="sidebar-menu-button" href="fixed-ui-progress.html">
                                         <span class="sidebar-menu-text">Progress Bars</span>

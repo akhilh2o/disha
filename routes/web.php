@@ -46,7 +46,8 @@ Route::middleware(['auth'])->prefix('student')->name('student.')->group(function
 });
 
 Route::get('/', function () {
-    return redirect()->to(config('app.main_url'));
+    // return redirect()->to(config('app.main_url'));
+    return to_route('register');
 });
 
 Route::get('exam', function () {
