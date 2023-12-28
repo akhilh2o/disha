@@ -164,7 +164,7 @@ class AuthController extends Controller
                 $data['razorpay_payment_id'] = $input['razorpay_payment_id'];
                 $data['id']                  = $response['id'];
                 $data['amount']              = $response['amount'];
-                $data['card']                = (array)$response['card'];
+                // $data['card']                = (array)$response['card'];
                 $data['created_at']          = $response['created_at'];
 
                 $user->lastest_course->update(['payment_status' => true, 'payment' => $data]);

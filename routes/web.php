@@ -50,11 +50,11 @@ Route::get('/', function () {
     return to_route('register');
 });
 
-Route::get('exam', function () {
-    return view('exam.start');
-});
+// Route::get('exam', function () {
+//     return view('exam.start');
+// });
 
-Route::get('running', function () {
-    $questions =  Question::with('answers')->get();
-    return view('exam.running')->with('questions', $questions);
-});
+// Route::get('running', function () {
+//     $questions =  Question::with('answers')->get();
+//     return view('exam.running')->with('questions', $questions);
+// });

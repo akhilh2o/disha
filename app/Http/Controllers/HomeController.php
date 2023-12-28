@@ -284,6 +284,8 @@ class HomeController extends Controller
             'avatar'    => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1048',
         ]);
 
+        $user = User::find(auth()->id());
+
         $data['name']       = $request->name;
         $data['mobile']     = $request->mobile;
 
@@ -301,7 +303,7 @@ class HomeController extends Controller
             $data['avatar'] = $imageName;
         }
 
-        auth()->user()->update($data);
+        $user->update($data);
 
         return redirect()->back()->withSuccess("Profile has been updated!");
     }
