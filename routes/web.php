@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\HomeController;
 use App\Models\Question;
 use Illuminate\Support\Facades\Route;
@@ -16,11 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('register', [AuthController::class, 'register'])->name('register');
 Route::post('register', [AuthController::class, 'registerStore'])->name('register.store');
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'authenticate'])->name('authenticate');
+
+Route::get('certificate-view', [CertificateController::class, 'certificate'])->name('certificate-view');
+Route::post('certificate-view', [CertificateController::class, 'certificateSearch'])->name('certificate-view.search');
 
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
