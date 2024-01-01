@@ -35,7 +35,7 @@ class CertificateController extends Controller
             if (strpos($object->name(), $partialFileName) !== false) {
                 // Found a matching file, you can return the URL or do other actions
                 $certificateFiles[$key]['certificate'] = $object->signedUrl(new \DateTime('2030-01-01T00:00:00Z'));
-                $certificateFiles[$key]['name']        = $object->name();
+                $certificateFiles[$key]['name']        = explode('/',$object->name())[1];
             }
         }
         // return $certificateFiles;

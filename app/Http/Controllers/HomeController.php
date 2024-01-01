@@ -281,7 +281,7 @@ class HomeController extends Controller
             'name'      => 'required',
             'mobile'    => 'required',
             'password'  => 'nullable',
-            'avatar'    => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:1048',
+            'avatar'    => 'nullable|image|mimes:jpeg,png,jpg|max:512',
         ]);
 
         $user = User::find(auth()->id());

@@ -100,6 +100,15 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="avatar">Photo</label>
+                                        <input type="file" id="avatar" class="form-control" name="avatar">
+                                        @error('avatar')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="gender">Gender</label>
                                         <div class="custom-controls-stacked form-row">
                                             <div class="col-6">

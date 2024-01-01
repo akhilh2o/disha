@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -44,6 +45,7 @@ class AuthController extends Controller
             'mother_name'    => 'required',
             'dob'            => 'required',
             'gender'         => 'required',
+            'avatar'         => 'nullable|image|mimes:jpeg,png,jpg|max:512',
         ]);
 
         // return $request;
@@ -67,6 +69,12 @@ class AuthController extends Controller
         $user->mother_name        = $request->mother_name;
         $user->dob                = $request->dob;
         $user->gender             = $request->gender;
+
+        if ($request->hasFile('avatar')) {
+            $imageName = 'avatar-' . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
+            $request->file('avatar')->move(public_path('image/student'), $imageName);
+            $user->avatar = $imageName;
+        }
 
         $user->save();
 

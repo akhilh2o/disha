@@ -31,7 +31,7 @@
                             </div>
                         </div>
                     </form>
-                    @if (isset($certificateFiles))
+                    @if (isset($certificateFiles) && count($certificateFiles)>0)
                     <div class="row mt-3">
                         <div class="col-lg-9 col-md-9 col-12 mx-auto">
                             <h2 class="h3">
@@ -42,6 +42,16 @@
                                 <a href="{{ $certificateFile['certificate'] }}" target="_blank">{{ $certificateFile['name'] }}</a>
                             </div>
                             @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(isset($certificateFiles) && count($certificateFiles)==0)
+                    <div class="div mt-3">
+                        <div class="col-lg-9 col-md-9 col-12 mx-auto">
+                            <div>
+                                <p>No Certificates Found...</p>
+                            </div>
                         </div>
                     </div>
                     @endif
