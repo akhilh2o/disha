@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use setasign\Fpdi\Fpdi;
+use Illuminate\Support\Str;
+
 
 class HomeController extends Controller
 {
@@ -199,11 +201,56 @@ class HomeController extends Controller
             })
             ->get();
         if ($exams) {
+            $this->uploadResultOnfirebase($exam, $user);
             return view('students.exam_result')->with('exams', $exams);
         }
         // User hasn't completed the exam; you can handle this case accordingly
         return redirect()->route('student.exam', $exam)
             ->withErrors('You have not completed all the questions.');
+    }
+
+    public function uploadResultOnfirebase(Exam $exam, User $user)
+    {
+        if ($user->is_insider) {
+            $exam->load('course');
+            $exam->load('attempt');
+        } else {
+            $exam = Exam::find($exam->id)
+                ->with('course')
+                ->with('attempt')
+                ->whereHas('attempt', function ($query) {
+                    $query->where('user_id', auth()->id());
+                    $query->where('is_completed', true);
+                })
+                ->first();
+        }
+        if ($exam) {
+
+            $filePath = public_path("certificate/sample.pdf");
+            // 500067_aakash_kumar_singh
+            $outputFilePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+
+            if (!File::exists($outputFilePath)) {
+                // The file doesn't exist, proceed with the operation
+                $this->fillPDFFile($exam, $filePath, $outputFilePath);
+                // return response()->file($outputFilePath);
+                // Generate a unique file name if needed
+                $fileName = "Certificates/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf";
+
+                // Get the Firebase Storage instance
+                $storage = app('firebase.storage');
+
+                // Check if the file already exists
+                if (!$storage->getBucket()->object($fileName)->exists()) {
+                    // Upload the file to Firebase Storage
+                    $storage->getBucket()->upload(file_get_contents($outputFilePath), [
+                        'name' => $fileName,
+                    ]);
+                }
+                // Retrieve the URL of the uploaded file
+                return $url = $storage->getBucket()->object($fileName)->signedUrl(new \DateTime('2030-01-01T00:00:00Z'));
+            }
+        }
     }
 
     public function resultDownload(Exam $exam, User $user)
@@ -221,12 +268,9 @@ class HomeController extends Controller
                 })
                 ->first();
         }
-
         if ($exam) {
-            $filePath = public_path("certificate/sample.pdf");
-            $outputFilePath = public_path("certificate/students/" . current(explode(' ', auth()->user()->name)) . '-' . $exam->slug . ".pdf");
-            $this->fillPDFFile($exam, $filePath, $outputFilePath);
-
+            // 500067_aakash_kumar_singh
+            $outputFilePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
             return response()->file($outputFilePath);
         }
         // User hasn't completed the exam; you can handle this case accordingly
@@ -236,7 +280,6 @@ class HomeController extends Controller
 
     public function fillPDFFile($exam, $file, $outputFilePath)
     {
-        // dd($exam);
         $fpdi = new FPDI;
 
         $count = $fpdi->setSourceFile($file);
@@ -249,21 +292,26 @@ class HomeController extends Controller
             $fpdi->useTemplate($template);
 
             $fpdi->SetFont("helvetica", "B", 10);
-            // $fpdi->SetTextColor(153, 0, 153);
-            $fpdi->Text(106, 111.5, strtoupper(auth()?->user()?->name));
-            $fpdi->Text(106, 122, strtoupper(auth()?->user()?->father_name));
-            $fpdi->Text(106, 133, strtoupper(auth()?->user()?->mother_name));
-            $fpdi->Text(106, 143.5, strtoupper(auth()?->user()?->dob));
+            $fpdi->Text(106, 106.5, strtoupper(auth()?->user()?->name));
+            $fpdi->Text(106, 118, strtoupper(auth()?->user()?->father_name));
+            $fpdi->Text(106, 128.5, strtoupper(auth()?->user()?->mother_name));
+            $fpdi->Text(106, 140, strtoupper(auth()?->user()?->dob));
             $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
-            $fpdi->Text(106, 164.5, "000" . auth()->user()->id);
-            // $fpdi->SetFont("helvetica", "B", 9);
-            // $fpdi->Text(176, 180, "Disha Computer Education");
+            $fpdi->Text(106, 166.5, auth()->user()->roll_number);
+            $fpdi->Text(106, 178, $exam?->course?->name);
             $fpdi->SetFont("helvetica", "B", 11);
             $fpdi->Text(52, 220.5, date('Y'));
-            $fpdi->Text(42, 243.5, "Sultanpur");
-            $fpdi->Text(42, 252, date('d-m-Y'));
+            $fpdi->Text(42, 239.5, "Sultanpur");
+            $fpdi->Text(42, 251, date('d-m-Y'));
+            // insert image at position x,y,w,h (in mm)
 
-            // $fpdi->Image("https://www.itsolutionstuff.com/assets/images/footer-logo.png", 40, 90);
+            if (app()->environment() === 'local') {
+                $fpdi->Image("https://cdn.vectorstock.com/i/preview-1x/82/99/no-image-available-like-missing-picture-vector-43938299.jpg", 165, 52, 22, 30);
+            } else {
+                if (auth()?->user()?->avatar) {
+                    $fpdi->Image(asset('image/student/' . auth()?->user()?->avatar), 165, 52, 22, 30);
+                }
+            }
         }
 
         return $fpdi->Output($outputFilePath, 'F');

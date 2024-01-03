@@ -47,6 +47,15 @@ class User extends Authenticatable implements FilamentUser
         'password' => 'hashed',
     ];
 
+    public function getRollNumberAttribute()
+    {
+        // Prefix for the roll number
+        $prefix = '50000';
+
+        // Combine prefix and id with a hyphen
+        return "{$prefix}{$this->id}";
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
