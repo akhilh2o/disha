@@ -39,7 +39,7 @@ class AuthController extends Controller
             'user_id'        => 'nullable',
             'course_id'      => 'required',
             'name'           => 'required',
-            'email'          => 'required|email|unique:users,email,'.$request->user_id,
+            'email'          => 'required|email',
             'mobile'         => 'required',
             'father_name'    => 'required',
             'mother_name'    => 'required',

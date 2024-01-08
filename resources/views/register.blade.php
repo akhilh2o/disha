@@ -101,9 +101,11 @@
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="avatar">Photo</label>
+                                        <span class="text-danger">(<small>This image will be used in your certificate.</small>)
                                         <input type="file" id="avatar" class="form-control" name="avatar">
+                                        <div class="text-info"><small>Note:- Photo should be 30x50 pixels.</small></div>
                                         @error('avatar')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
