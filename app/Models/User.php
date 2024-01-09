@@ -61,6 +61,11 @@ class User extends Authenticatable implements FilamentUser
         return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
     }
 
+    public function center()
+    {
+        return $this->hasOne(Center::class)->get('name');
+    }
+
     public function courses()
     {
         return $this->hasMany(StudentCourse::class, 'student_id', 'id')->with('course');

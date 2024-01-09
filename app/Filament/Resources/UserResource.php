@@ -19,6 +19,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationLabel = 'Students';
 
     public static function getEloquentQuery(): Builder
     {
@@ -61,11 +62,7 @@ class UserResource extends Resource
                     ->maxLength(255)
                     ->hidden()
                     ->default('student'),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        '1' => 'Active',
-                        '0' => 'Inactive',
-                    ])->searchable(),
+                Forms\Components\Toggle::make('status'),
             ]);
     }
 
@@ -73,6 +70,8 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('roll_number'),
+                Tables\Columns\TextColumn::make('center.name'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
