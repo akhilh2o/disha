@@ -18,4 +18,9 @@ class Center extends Model
         // Combine prefix and id with a hyphen
         return "{$prefix}{$this->id}";
     }
+
+    public function students()
+    {
+        return $this->hasMany(User::class);
+    }
 }

@@ -63,7 +63,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function center()
     {
-        return $this->hasOne(Center::class)->get('name');
+        return $this->hasOne(Center::class,'id','center_id');
     }
 
     public function courses()
