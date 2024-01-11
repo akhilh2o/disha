@@ -258,6 +258,11 @@ class HomeController extends Controller
         if ($user->is_insider) {
             $exam->load('course');
             $exam->load('attempt');
+            // check file exists
+            $filePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+            if (!File::exists($filePath)) {
+                $this->uploadResultOnfirebase($exam, $user);
+            }
         } else {
             $exam = Exam::find($exam->id)
                 ->with('course')

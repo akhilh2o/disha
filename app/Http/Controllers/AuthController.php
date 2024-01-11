@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Center;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,7 @@ class AuthController extends Controller
             if ($user?->lastest_course) {
                 if ($user?->lastest_course?->payment_status == false) {
                     return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
-                }else{
+                } else {
                     return to_route('student.exams');
                 }
             }
@@ -49,18 +50,21 @@ class AuthController extends Controller
         ]);
 
         // return $request;
+        // get session for center login 
+        $user = new User;
 
-        if (auth()->check()) {
-            $user = User::find(auth()->id());
-            $user->is_insider  = true;
+        $center = Center::find($request->session()->get('center_id'));
+        if ($center) {
+            $user->is_insider   = true;
+            $user->center_id    = $center?->id;
         } else {
-            $user = new User;
-            $user->password           = Hash::make(Str::random(8));
-            $user->is_insider         = false;
-            $user->role               = 'student';
-            $user->status             = 1;
-            $user->email_verified_at  = now();
+            $user->is_insider   = false;
         }
+
+        $user->password           = Hash::make(Str::random(8));
+        $user->role               = 'student';
+        $user->status             = 1;
+        $user->email_verified_at  = now();
 
         $user->name               = $request->name;
         $user->email              = $request->email;
@@ -105,19 +109,41 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt([
-            'email'     => $request->email,
-            'password'  => $request->password,
-            'status'    => 1,
-            'role'      => 'student'
-        ])) {
-            $request->session()->regenerate();
-            return redirect()->route('register');
+        $center = $this->getCenter($request->email, $request->password);
+
+        // if center not found then return error
+        if (!$center) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        // if center status is false then return error
+        if (!$center?->status) {
+            return back()->withErrors([
+                'email' => 'The Center is not active. please contact Admin.',
+            ])->onlyInput('email');
+        }
+
+        // set session for center login 
+        $request->session()->put('center_id', $center->id);
+
+        return redirect()->route('register');
+
+
+        // if (Auth::attempt([
+        //     'email'     => $request->email,
+        //     'password'  => $request->password,
+        //     'status'    => 1,
+        //     'role'      => 'student'
+        // ])) {
+        //     $request->session()->regenerate();
+        //     return redirect()->route('register');
+        // }
+
+        // return back()->withErrors([
+        //     'email' => 'The provided credentials do not match our records.',
+        // ])->onlyInput('email');
     }
     /**
      * Log the user out of the application.
@@ -132,7 +158,14 @@ class AuthController extends Controller
 
         return redirect('/login');
     }
-    // helper function
+    // helper function 
+    public function getCenter($email, $password)
+    {
+        return Center::where('email', $email)
+            ->where('password', $password)
+            ->first();
+    }
+
     public function getCourse($slug)
     {
         return Course::where('slug', $slug)
