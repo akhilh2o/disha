@@ -296,12 +296,21 @@ class HomeController extends Controller
             $fpdi->AddPage($size['orientation'], array($size['width'], $size['height']));
             $fpdi->useTemplate($template);
 
+            $fpdi->SetFont("helvetica", "B", 12);
+            $fpdi->setFillColor(239,217,140);
+            $fpdi->Rect(16.5,74,52,9.4,'F');
+            $fpdi->Text(20, 80, "Certificate No. " . auth()?->user()?->roll_number);
+
             $fpdi->SetFont("helvetica", "B", 10);
             $fpdi->Text(106, 106.5, strtoupper(auth()?->user()?->name));
             $fpdi->Text(106, 118, strtoupper(auth()?->user()?->father_name));
             $fpdi->Text(106, 128.5, strtoupper(auth()?->user()?->mother_name));
             $fpdi->Text(106, 140, strtoupper(auth()?->user()?->dob));
-            $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
+            if(auth()->user()->is_insider){
+                $fpdi->Text(106, 154, strtoupper(auth()?->user()?->center?->name));
+            }else{
+                $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
+            }
             $fpdi->Text(106, 166.5, auth()->user()->roll_number);
             $fpdi->Text(106, 178, $exam?->course?->name);
             $fpdi->SetFont("helvetica", "B", 11);
