@@ -24,6 +24,7 @@ class CenterResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label("Institute Name")
                     ->required()
                     ->maxLength(191),
                 Forms\Components\TextInput::make('email')
@@ -44,8 +45,10 @@ class CenterResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('center_code'),
+                Tables\Columns\TextColumn::make('center_code')
+                    ->label("Code"),
                 Tables\Columns\TextColumn::make('name')
+                    ->label("Institute Name")
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
