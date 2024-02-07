@@ -47,6 +47,7 @@ class AuthController extends Controller
             'dob'            => 'required',
             'gender'         => 'required',
             'avatar'         => 'nullable|image|mimes:jpeg,png,jpg|max:512',
+            'institute_name' => 'sometimes',
         ]);
 
         // return $request;
@@ -55,10 +56,11 @@ class AuthController extends Controller
 
         $center = Center::find($request->session()->get('center_id'));
         if ($center) {
-            $user->is_insider   = true;
-            $user->center_id    = $center?->id;
+            $user->is_insider       = true;
+            $user->center_id        = $center?->id;
+            $user->institute_name   = $request->institute_name;
         } else {
-            $user->is_insider   = false;
+            $user->is_insider       = false;
         }
 
         $user->password           = Hash::make(Str::random(8));

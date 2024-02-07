@@ -307,7 +307,7 @@ class HomeController extends Controller
             $fpdi->Text(106, 128.5, strtoupper(auth()?->user()?->mother_name));
             $fpdi->Text(106, 140, strtoupper(auth()?->user()?->dob));
             if(auth()->user()->is_insider){
-                $fpdi->Text(106, 154, strtoupper(auth()?->user()?->center?->name));
+                $fpdi->Text(106, 154, strtoupper(auth()?->user()?->institute_name));
             }else{
                 $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
             }

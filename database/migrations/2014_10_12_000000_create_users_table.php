@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('role')->nullable()->default('student')
                 ->comment('is should be student for the student else admin');
             $table->boolean('is_insider')->nullable()->default(true);
+            $table->text('institute_name')->nullable()->default(null);
             $table->boolean('status')->nullable()->default(false);
             $table->rememberToken();
             $table->timestamps();

@@ -35,7 +35,7 @@
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="name">Full name</label>
                                         <input type="text" id="name" name="name" placeholder="Full name"
-                                            value="{{ auth()->check() ? auth()?->user()?->name : old('name') }}"
+                                            value="{{ old('name') }}"
                                             required="" @class(['form-control', 'is-invalid' => $errors->has('name')])>
                                         @error('name')
                                             <div class="invalid-feedback">{{ $message }}</div>
@@ -44,8 +44,8 @@
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="email">Email</label>
                                         <input type="email" name="email" id="email" placeholder="Email"
-                                            value="{{ auth()->check() ? auth()?->user()?->email : old('email') }}"
-                                            required="" @class(['form-control', 'is-invalid' => $errors->has('email')]) @readonly(auth()->check())>
+                                            value="{{ old('email') }}"
+                                            required="" @class(['form-control', 'is-invalid' => $errors->has('email')])>
                                         @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -102,12 +102,23 @@
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="avatar">Photo</label>
                                         <span class="text-danger">(<small>This image will be used in your certificate.</small>)
-                                        <input type="file" id="avatar" class="form-control" name="avatar">
-                                        <div class="text-info"><small>Note:- Photo should be 30x50 pixels.</small></div>
-                                        @error('avatar')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                            <input type="file" id="avatar" class="form-control" name="avatar">
+                                            <div class="text-info"><small>Note:- Photo should be 30x50 pixels.</small></div>
+                                            @error('avatar')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        @if (session()->get('center_id'))
+                                        <div class="col-12 col-md-6 mb-3">
+                                            <label class="form-label" for="institute_name">Institute Name</label>
+                                            <input type="text" id="institute_name" name="institute_name" placeholder="Institute name"
+                                                value="{{ old('institute_name') }}"
+                                                required="" @class(['form-control', 'is-invalid' => $errors->has('institute_name')])>
+                                            @error('institute_name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        @endif
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
