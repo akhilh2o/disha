@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('course_id')->constrained('courses', 'id')->cascadeOnDelete();
             $table->boolean('payment_status')->nullable()->default(false)->comment('payment status paid/pending');
             $table->json('payment')->nullable()->default(null);
+            $table->string('duration')->nullable()->default(null);
             $table->timestamps();
         });
     }

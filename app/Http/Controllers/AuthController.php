@@ -48,6 +48,7 @@ class AuthController extends Controller
             'gender'         => 'required',
             'avatar'         => 'nullable|image|mimes:jpeg,png,jpg|max:512',
             'institute_name' => 'sometimes',
+            'duration'       => 'required',
         ]);
 
         // return $request;
@@ -86,6 +87,7 @@ class AuthController extends Controller
 
         $user->courses()->create([
             'course_id'        => $request->course_id,
+            'duration'         => $request->duration,
             'payment_status'   => false,
         ]);
 

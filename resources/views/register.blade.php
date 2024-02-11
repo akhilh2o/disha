@@ -15,28 +15,36 @@
                         <input name="user_id" value="{{ auth()->check() ? auth()->id() : '' }}" type="hidden">
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-12">
-                                <div class="form-group">
-                                    <label class="form-label" for="course_id">Course </label>
-                                    <span class="text-danger">(<small>Select course for the registration.</small>)
-                                    </span>
-                                    <select id="course_id" name="course_id" @class(['form-control', 'is-invalid' => $errors->has('course_id')]) required>
-                                        <option value=""> Course </option>
-                                        @foreach ($courses ?? [] as $course)
-                                            <option value="{{ $course?->id }}" @selected(old('course_id') == $course?->id)>
-                                                {{ $course?->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('course_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                <div class="form-row">
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="course_id">Course </label>
+                                        <span class="text-danger">(<small>Select course for the registration.</small>)
+                                        </span>
+                                        <select id="course_id" name="course_id" @class(['form-control', 'is-invalid' => $errors->has('course_id')]) required>
+                                            <option value=""> Course </option>
+                                            @foreach ($courses ?? [] as $course)
+                                                <option value="{{ $course?->id }}" @selected(old('course_id') == $course?->id)>
+                                                    {{ $course?->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('course_id')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="duration">Duration</label>
+                                        <input type="text" id="duration" name="duration" placeholder="{{ now()->format('Y') }}" value="{{ old('duration') }}" required="" @class(['form-control', 'is-invalid' => $errors->has('duration')])>
+                                        @error('duration')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="name">Full name</label>
                                         <input type="text" id="name" name="name" placeholder="Full name"
-                                            value="{{ old('name') }}"
-                                            required="" @class(['form-control', 'is-invalid' => $errors->has('name')])>
+                                            value="{{ old('name') }}" required="" @class(['form-control', 'is-invalid' => $errors->has('name')])>
                                         @error('name')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -44,8 +52,7 @@
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="email">Email</label>
                                         <input type="email" name="email" id="email" placeholder="Email"
-                                            value="{{ old('email') }}"
-                                            required="" @class(['form-control', 'is-invalid' => $errors->has('email')])>
+                                            value="{{ old('email') }}" required="" @class(['form-control', 'is-invalid' => $errors->has('email')])>
                                         @error('email')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -101,24 +108,29 @@
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="avatar">Photo</label>
-                                        <span class="text-danger">(<small>This image will be used in your certificate.</small>)
+                                        <span class="text-danger">(<small>This image will be used in your
+                                                certificate.</small>)
                                             <input type="file" id="avatar" class="form-control" name="avatar">
-                                            <div class="text-info"><small>Note:- Photo should be 30x50 pixels.</small></div>
+                                            <div class="text-info"><small>Note:- Photo should be 30x50 pixels.</small>
+                                            </div>
                                             @error('avatar')
-                                            <div class="invalid-feedback">{{ $message }}</div>
+                                                <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-                                        </div>
-                                        @if (session()->get('center_id'))
+                                    </div>
+                                    @if (session()->get('center_id'))
                                         <div class="col-12 col-md-6 mb-3">
                                             <label class="form-label" for="institute_name">Institute Name</label>
-                                            <input type="text" id="institute_name" name="institute_name" placeholder="Institute name"
-                                                value="{{ old('institute_name') }}"
-                                                required="" @class(['form-control', 'is-invalid' => $errors->has('institute_name')])>
+                                            <input type="text" id="institute_name" name="institute_name"
+                                                placeholder="Institute name" value="{{ old('institute_name') }}"
+                                                required="" @class([
+                                                    'form-control',
+                                                    'is-invalid' => $errors->has('institute_name'),
+                                                ])>
                                             @error('institute_name')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
-                                        @endif
+                                    @endif
                                 </div>
                                 <div class="form-row">
                                     <div class="col-12 col-md-6 mb-3">

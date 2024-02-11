@@ -297,8 +297,8 @@ class HomeController extends Controller
             $fpdi->useTemplate($template);
 
             $fpdi->SetFont("helvetica", "B", 12);
-            $fpdi->setFillColor(239,217,140);
-            $fpdi->Rect(16.5,74,52,9.4,'F');
+            $fpdi->setFillColor(239, 217, 140);
+            $fpdi->Rect(16.5, 74, 52, 9.4, 'F');
             $fpdi->Text(20, 80, "Certificate No. " . auth()?->user()?->roll_number);
 
             $fpdi->SetFont("helvetica", "B", 10);
@@ -306,15 +306,15 @@ class HomeController extends Controller
             $fpdi->Text(106, 118, strtoupper(auth()?->user()?->father_name));
             $fpdi->Text(106, 128.5, strtoupper(auth()?->user()?->mother_name));
             $fpdi->Text(106, 140, strtoupper(auth()?->user()?->dob));
-            if(auth()->user()->is_insider){
+            if (auth()->user()->is_insider) {
                 $fpdi->Text(106, 154, strtoupper(auth()?->user()?->institute_name));
-            }else{
+            } else {
                 $fpdi->Text(106, 154, strtoupper("Disha Computer Education"));
             }
             $fpdi->Text(106, 166.5, auth()->user()->roll_number);
             $fpdi->Text(106, 178, $exam?->course?->name);
             $fpdi->SetFont("helvetica", "B", 11);
-            $fpdi->Text(52, 220.5, date('Y'));
+            $fpdi->Text(52, 220.5, auth()?->user()?->lastest_course?->duration);
             $fpdi->Text(42, 239.5, "Sultanpur");
             $fpdi->Text(42, 251, date('d-m-Y'));
             // insert image at position x,y,w,h (in mm)
