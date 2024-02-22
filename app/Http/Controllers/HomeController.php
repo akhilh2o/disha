@@ -229,7 +229,6 @@ class HomeController extends Controller
             $filePath = public_path("certificate/sample.pdf");
             // 500067_aakash_kumar_singh
             $outputFilePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
-
             if (!File::exists($outputFilePath)) {
                 // The file doesn't exist, proceed with the operation
                 $this->fillPDFFile($exam, $filePath, $outputFilePath);
@@ -314,9 +313,10 @@ class HomeController extends Controller
             $fpdi->Text(106, 166.5, auth()->user()->roll_number);
             $fpdi->Text(106, 178, $exam?->course?->name);
             $fpdi->SetFont("helvetica", "B", 11);
-            $fpdi->Text(52, 220.5, auth()?->user()?->lastest_course?->duration);
-            $fpdi->Text(42, 239.5, "Sultanpur");
-            $fpdi->Text(42, 251, date('d-m-Y'));
+            $fpdi->Text(43, 213, auth()?->user()?->lastest_course?->duration);
+            $fpdi->Text(40, 223, auth()?->user()?->lastest_course?->session);
+            $fpdi->Text(39, 242, "Sultanpur");
+            $fpdi->Text(47, 253, date('d-m-Y'));
             // insert image at position x,y,w,h (in mm)
 
             if (app()->environment() === 'local') {

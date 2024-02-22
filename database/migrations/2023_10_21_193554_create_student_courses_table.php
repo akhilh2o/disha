@@ -18,6 +18,8 @@ return new class extends Migration
             $table->boolean('payment_status')->nullable()->default(false)->comment('payment status paid/pending');
             $table->json('payment')->nullable()->default(null);
             $table->string('duration')->nullable()->default(null);
+            $table->string('session')->nullable()->default(null);
+            $table->string('issue_date')->nullable()->default(null);
             $table->timestamps();
         });
     }

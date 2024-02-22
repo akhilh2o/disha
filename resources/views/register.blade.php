@@ -33,9 +33,9 @@
                                         @enderror
                                     </div>
                                     <div class="col-12 col-md-6 mb-3">
-                                        <label class="form-label" for="duration">Duration</label>
-                                        <input type="text" id="duration" name="duration" placeholder="{{ now()->format('Y') }}" value="{{ old('duration') }}" required="" @class(['form-control', 'is-invalid' => $errors->has('duration')])>
-                                        @error('duration')
+                                        <label class="form-label" for="session">Session</label>
+                                        <input type="text" id="session" name="session" placeholder="{{ now()->format('Y') }}" value="{{ old('session') }}" required="" @class(['form-control', 'is-invalid' => $errors->has('session')])>
+                                        @error('session')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -130,6 +130,33 @@
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                    @endif
+                                </div>
+
+                                <div class="form-row">
+                                    @if (session()->get('center_id'))
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label class="form-label" for="issue_date">Issue Date</label>
+                                        <input id="issue_date" type="hidden" placeholder="Issue Date" data-toggle="flatpickr"
+                                            name="issue_date"
+                                            data-default-date="{{ old('issue_date') }}"
+                                            value="{{ old('issue_date') }}"
+                                            @class([
+                                                'form-control',
+                                                'flatpickr-input',
+                                                'is-invalid' => $errors->has('issue_date'),
+                                            ])>
+                                        @error('issue_date')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="col-12 col-md-6 mb-3 d-none">
+                                        <label class="form-label" for="duration">Duration</label>
+                                        <input type="text" id="duration" name="duration" placeholder="1 Year" value="{{ old('duration') }}" @class(['form-control', 'is-invalid' => $errors->has('duration')])>
+                                        @error('duration')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                     @endif
                                 </div>
                                 <div class="form-row">
