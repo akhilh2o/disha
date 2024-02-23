@@ -150,7 +150,7 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
-                                    <div class="col-12 col-md-6 mb-3 d-none">
+                                    <div class="col-12 col-md-6 mb-3">
                                         <label class="form-label" for="duration">Duration</label>
                                         <input type="text" id="duration" name="duration" placeholder="1 Year" value="{{ old('duration') }}" @class(['form-control', 'is-invalid' => $errors->has('duration')])>
                                         @error('duration')
