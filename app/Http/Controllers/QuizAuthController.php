@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Razorpay\Api\Api;
 
-class AuthController extends Controller
+class QuizAuthController extends Controller
 {
     protected Course $course;
 
@@ -32,7 +32,7 @@ class AuthController extends Controller
         }
 
         $courses = $this->getCourses();
-        return view('register')->with('courses', $courses);
+        return view('quiz.register')->with('courses', $courses);
     }
     public function registerStore(Request $request)
     {
@@ -46,7 +46,7 @@ class AuthController extends Controller
             'mother_name'    => 'required',
             'dob'            => 'required',
             'gender'         => 'required',
-            'avatar'         => 'nullable|image|mimes:jpeg,png,jpg|max:512|dimensions:max_width=250,max_height=350',
+            'avatar'         => 'nullable|image|mimes:jpeg,png,jpg|max:512|dimensions:max_width=200,max_height=300',
             'institute_name' => 'sometimes',
             'duration'       => 'sometimes',
             'session'        => 'sometimes'
@@ -98,7 +98,7 @@ class AuthController extends Controller
 
         if (auth()->check()) {
             $request->session()->regenerate();
-            return redirect()->route('student.exams');
+            return redirect()->route('quiz.exams');
         }
 
         return back()->withErrors('Something went wrong!');
@@ -136,7 +136,6 @@ class AuthController extends Controller
         $request->session()->put('center_id', $center->id);
 
         return redirect()->route('register');
-
 
         // if (Auth::attempt([
         //     'email'     => $request->email,

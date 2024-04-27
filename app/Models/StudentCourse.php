@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -10,6 +11,11 @@ class StudentCourse extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function getIssueDateAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
 
     /**
      * Get the payment detail.

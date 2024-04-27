@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\HomeController;
-use App\Models\Question;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,6 +53,10 @@ Route::get('/', function () {
     // return redirect()->to(config('app.main_url'));
     return to_route('register');
 });
+
+//quiz route for student 
+require __DIR__.'/quiz.php';
+
 
 // Route::get('exam', function () {
 //     return view('exam.start');

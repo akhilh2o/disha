@@ -16,16 +16,16 @@ use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Str;
 
 
-class HomeController extends Controller
+class QuizController extends Controller
 {
 
     public function exams(Request $request)
     {
         $user = User::find(auth()->id());
         $user->load('lastest_course');
-        if ($user?->lastest_course?->payment_status == false) {
-            return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
-        }
+        // if ($user?->lastest_course?->payment_status == false) {
+        //     return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
+        // }
 
         if ($user->is_insider) {
             // return $user;
@@ -37,7 +37,7 @@ class HomeController extends Controller
             ->whereDoesntHave('attempt')
             ->get();
 
-        return view('students.exams')->with('user', $user)
+        return view('quiz.exams')->with('user', $user)
             ->with('exams', $exams);
     }
 
@@ -50,7 +50,7 @@ class HomeController extends Controller
                 ->with('course')
                 ->with('course.exam')
                 ->get();
-            return view('students.insider.certificate')->with('studentCourse', $studentCourse);
+            return view('quiz.insider.certificate')->with('studentCourse', $studentCourse);
         } else {
             $studentCourse = StudentCourse::where('student_id', auth()->id())
                 ->with('course')
@@ -58,7 +58,7 @@ class HomeController extends Controller
                 ->whereHas('course.exam.attempt')
                 ->get();
 
-            return view('students.dashboard')->with('studentCourse', $studentCourse);
+            return view('quiz.dashboard')->with('studentCourse', $studentCourse);
         }
     }
 
@@ -73,7 +73,7 @@ class HomeController extends Controller
         $attemptedQuestions = $this->attemptedQuestions($exam, $user);
         $question = $exam->questions()->with('answers')->first();
         $questionAnswer = $this->questionAnswer($question, $exam);
-        return view('students.exam')->with('exam', $exam)
+        return view('quiz.exam')->with('exam', $exam)
             ->with('question', $question)
             ->with('attemptedQuestions', $attemptedQuestions)
             ->with('questionAnswer', $questionAnswer);
@@ -91,10 +91,10 @@ class HomeController extends Controller
 
         $questionAnswer = $this->questionAnswer($question, $exam);
         if ($question) {
-            return view('students.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
+            return view('quiz.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
         } else {
             // There are no more questions; you can redirect to a finish page or exam summary.
-            return redirect()->route('student.exam.finish', [$exam]);
+            return redirect()->route('quiz.exam.finish', [$exam]);
         }
     }
 
@@ -109,10 +109,10 @@ class HomeController extends Controller
             ->first();
         $questionAnswer = $this->questionAnswer($question, $exam);
         if ($question) {
-            return view('students.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
+            return view('quiz.exam', compact('exam', 'question', 'attemptedQuestions', 'questionAnswer'));
         } else {
             // There are no more questions; you can redirect to a finish page or exam summary.
-            return redirect()->route('student.exam.finish', [$exam]);
+            return redirect()->route('quiz.exam.finish', [$exam]);
         }
     }
 
@@ -149,9 +149,9 @@ class HomeController extends Controller
 
 
         if ($question->isNot($exam->questions->last())) {
-            return redirect()->route('student.exam.question.show', ['exam' => $exam, 'question' => $question]);
+            return redirect()->route('quiz.exam.question.show', ['exam' => $exam, 'question' => $question]);
         } else {
-            return redirect()->route('student.exam.finish', [$exam]);
+            return redirect()->route('quiz.exam.finish', [$exam]);
         }
     }
 
@@ -185,10 +185,10 @@ class HomeController extends Controller
             }
 
             // Redirect to a page that displays the exam results
-            return redirect()->route('student.exam.result', compact('exam', 'user'));
+            return redirect()->route('quiz.exam.result', compact('exam', 'user'));
         } else {
             // User hasn't completed the exam; you can handle this case accordingly
-            return redirect()->route('student.exam', $exam)
+            return redirect()->route('quiz.exam', $exam)
                 ->withErrors('You have not completed all the questions.');
         }
     }
@@ -204,11 +204,11 @@ class HomeController extends Controller
             })
             ->get();
         if ($exams) {
-            $this->uploadResultOnfirebase($exam, $user);
-            return view('students.exam_result')->with('exams', $exams);
+            // $this->uploadResultOnfirebase($exam, $user);
+            return view('quiz.exam_result')->with('exams', $exams);
         }
         // User hasn't completed the exam; you can handle this case accordingly
-        return redirect()->route('student.exam', $exam)
+        return redirect()->route('quiz.exam', $exam)
             ->withErrors('You have not completed all the questions.');
     }
 
@@ -231,7 +231,7 @@ class HomeController extends Controller
 
             $filePath = public_path("certificate/sample.pdf");
             // 500067_aakash_kumar_singh
-            $outputFilePath =public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+            $outputFilePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
             if (!File::exists($outputFilePath)) {
                 // The file doesn't exist, proceed with the operation
                 $this->fillPDFFile($exam, $filePath, $outputFilePath);
@@ -264,7 +264,7 @@ class HomeController extends Controller
             $exam->load('course');
             $exam->load('attempt');
             // check file exists
-            $filePath =public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+            $filePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
             if (!File::exists($filePath)) {
                 $this->uploadResultOnfirebase($exam, $user);
             }
@@ -284,7 +284,7 @@ class HomeController extends Controller
             return response()->file($outputFilePath);
         }
         // User hasn't completed the exam; you can handle this case accordingly
-        return redirect()->route('student.exam', $exam)
+        return redirect()->route('quiz.exam', $exam)
             ->withErrors('You have not completed all the questions.');
     }
 
@@ -331,7 +331,6 @@ class HomeController extends Controller
                     $fpdi->Image(asset('image/student/' . auth()?->user()?->avatar),  164, 48.5, 28, 37);
                 }
             }
-
         }
 
         return $fpdi->Output($outputFilePath, 'F');
@@ -340,7 +339,7 @@ class HomeController extends Controller
     public function profile()
     {
         $user = auth()->user();
-        return view('students.profile')->with('user', $user);
+        return view('quiz.profile')->with('user', $user);
     }
     // profile update
     public function update(Request $request)

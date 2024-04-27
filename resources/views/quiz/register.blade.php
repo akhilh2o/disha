@@ -10,7 +10,7 @@
             <div class="container page__container">
                 <h1 class="h2">Register</h1>
                 <div class="card card-body">
-                    <form action="{{ route('register.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('quiz.register.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input name="user_id" value="{{ auth()->check() ? auth()->id() : '' }}" type="hidden">
                         <div class="row">
