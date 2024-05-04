@@ -29,7 +29,18 @@
 
     <!-- App CSS -->
     <link type="text/css" href="{{ asset('assets/frontend/css/app.css') }}" rel="stylesheet">
-
+    <style>
+        #timer {
+          font-size: 40px;
+          font-family: 'Arial', sans-serif;
+          color: #333;
+          background-color: #f8f8f8;
+          padding: 10px 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+          display: inline-block;
+        }
+      </style>
 </head>
 
 <body class="layout-fluid">
@@ -211,10 +222,8 @@
 
         <!-- Header Layout Content -->
         <div class="mdk-header-layout__content">
-
             <div data-push data-responsive-width="992px" class="mdk-drawer-layout js-mdk-drawer-layout">
-                <div class="mdk-drawer-layout__content page ">
-
+                <div class="mdk-drawer-layout__content page">
                     <div class="container-fluid page__container">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{{ route('quiz.exams') }}">Home</a></li>
@@ -222,13 +231,18 @@
                         </ol>
                         <div class="media mb-headings align-items-center">
                             <div class="media-left">
-                                <img src="{{ $exam?->course?->image() }}" alt="" width="80"
-                                    class="rounded">
+                                <img src="{{ $exam?->course?->image() }}" alt="" width="80" class="rounded">
                             </div>
                             <div class="media-body">
                                 <h1 class="h2">{{ $exam?->course?->name }}</h1>
-                                <p class="text-muted">Duration: {{ $exam?->duration }} Min / Max Mark:
-                                    {{ $exam?->maximum_mark }} / Passing Mark: {{ $exam?->passing_mark }}</p>
+                                <p class="text-muted">Duration: {{ $exam?->duration }} 
+                                    {{-- Min / Max Mark: {{ $exam?->maximum_mark }}  --}}
+                                    {{-- / Passing Mark: {{ $exam?->passing_mark }} --}}
+                                </p>
+                                <input type="hidden" name="duration" id="duration" value="{{ $exam?->duration }}">
+                            </div>
+                            <div class="media-right">
+                                <div id="timer"></div>
                             </div>
                         </div>
                         <div class="card-group">
@@ -284,7 +298,7 @@
                                                     <input id="radio{{ $loop->iteration }}" type="radio"
                                                         class="custom-control-input" value="{{ $answer?->id }}"
                                                         name="answer" @disabled($questionAnswer)
-                                                        @checked($questionAnswer && $questionAnswer?->answer == $answer?->text) required>
+                                                        @checked($questionAnswer && $questionAnswer?->answer == $answer?->text)>
                                                     <label for="radio{{ $loop->iteration }}" class="custom-control-label">{{ $answer?->text }}</label>
                                                 </div>
                                             </div>
@@ -486,6 +500,59 @@
 
     <!-- Init -->
     <script src="{{ asset('assets/frontend/js/countdown.js') }}"></script>
+
+    <script>
+        $(document).ready(function(){
+            var duration = $('#duration').val();
+            // Function to set deadline time
+            function setDeadlineTime() {
+                var timeInMinutes = duration;
+                console.log(timeInMinutes);
+                var currentTime = Date.parse(new Date());
+                var deadline = new Date(currentTime + timeInMinutes*60*1000);
+                localStorage.setItem('deadline', deadline);
+            }
+        
+            // setDeadlineTime();
+            // Function to get remaining time
+            function getTimeRemaining(endtime){
+                var total = Date.parse(endtime) - Date.parse(new Date());
+                var seconds = Math.floor((total/1000) % 60);
+                var minutes = Math.floor((total/1000/60) % 60);
+                return {
+                    'total': total,
+                    'minutes': minutes,
+                    'seconds': seconds
+                };
+            }
+        
+            // Function to initialize the clock
+            function initializeClock(endtime){
+                function updateClock(){
+                    var t = getTimeRemaining(endtime);
+                    if(t.total <= 0){
+                        var url = "{{ route('quiz.exam.finish', ['exam' => $exam]) }}";
+                        // $("#finishExam").trigger("click");
+                        window.location.href = url;
+                        clearInterval(timeinterval);
+                    }
+                    // Display the time remaining in the div
+                    $('#timer').text(('0' + t.minutes).slice(-2) + ':' + ('0' + t.seconds).slice(-2));
+                }
+                updateClock();
+                var timeinterval = setInterval(updateClock, 1000);
+            }
+        
+            // Check if deadline is stored in local storage
+            var storedDeadline = localStorage.getItem('deadline');
+            if (storedDeadline) {
+                initializeClock(storedDeadline);
+            } else {
+                setDeadlineTime();
+                initializeClock(localStorage.getItem('deadline'));
+            }
+        });
+        </script>
 
 </body>
 

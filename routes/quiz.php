@@ -4,7 +4,7 @@ use App\Http\Controllers\QuizAuthController;
 use App\Http\Controllers\QuizController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('quiz/register', [QuizAuthController::class, 'register'])->name('register');
+Route::get('quiz/register', [QuizAuthController::class, 'register'])->name('quiz.register');
 Route::post('quiz/register', [QuizAuthController::class, 'registerStore'])->name('quiz.register.store');
 
 Route::middleware(['auth'])->prefix('quiz')->name('quiz.')->group(function () {

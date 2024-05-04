@@ -53,4 +53,10 @@
         @endforelse
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        localStorage.setItem('deadline', null);
+        localStorage.removeItem('deadline');
+    });
+</script>
 @endsection

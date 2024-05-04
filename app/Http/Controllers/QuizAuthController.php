@@ -19,18 +19,23 @@ class QuizAuthController extends Controller
 
     public function register(Request $request)
     {
-        if (auth()->check()) {
-            $user = User::find(auth()->id());
-            $user->load('lastest_course');
-            if ($user?->lastest_course) {
-                if ($user?->lastest_course?->payment_status == false) {
-                    return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
-                } else {
-                    return to_route('student.exams');
-                }
-            }
-        }
+        Auth::logout();
 
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+        // if (auth()->check()) {
+        //     $user = User::find(auth()->id());
+        //     $user->load('lastest_course');
+        //     if ($user?->lastest_course) {
+        //         if ($user?->lastest_course?->payment_status == false) {
+        //             // return to_route('payment')->withErrors('Your previous course registration fee was due! please make sure pay right now and get your certificate.');
+        //         } else {
+        //             return to_route('quiz.exams');
+        //         }
+        //     }
+        // }
+        
         $courses = $this->getCourses();
         return view('quiz.register')->with('courses', $courses);
     }
@@ -57,6 +62,8 @@ class QuizAuthController extends Controller
         $user = new User;
 
         $center = Center::find($request->session()->get('center_id'));
+        // just for set empty center
+        $center = null;
         if ($center) {
             $user->is_insider       = true;
             $user->center_id        = $center?->id;

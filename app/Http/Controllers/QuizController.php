@@ -169,7 +169,7 @@ class QuizController extends Controller
             })->sum('score');
 
 
-        if ($attemptedQuestions == $exam->questions->count()) {
+        // if ($attemptedQuestions == $exam->questions->count()) {
             // User has completed the exam; you can calculate the score here if needed
             $examAttempt = ExamAttempt::where(['user_id' => auth()->id(), 'exam_id' => $exam?->id, 'is_completed' => true])->first();
             if (!$examAttempt) {
@@ -186,11 +186,11 @@ class QuizController extends Controller
 
             // Redirect to a page that displays the exam results
             return redirect()->route('quiz.exam.result', compact('exam', 'user'));
-        } else {
-            // User hasn't completed the exam; you can handle this case accordingly
-            return redirect()->route('quiz.exam', $exam)
-                ->withErrors('You have not completed all the questions.');
-        }
+        // } else {
+        //     // User hasn't completed the exam; you can handle this case accordingly
+        //     return redirect()->route('quiz.exam', $exam)
+        //         ->withErrors('You have not completed all the questions.');
+        // }
     }
 
     public function examResult(Exam $exam, User $user)

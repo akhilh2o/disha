@@ -166,18 +166,15 @@
                                             <div class="col-6">
                                                 <div class="custom-control custom-radio">
                                                     <input id="gender1" name="gender" type="radio"
-                                                        class="custom-control-input" value="male"
-                                                        @checked(auth()->check() && auth()?->user()?->gender == 'male')>
+                                                        class="custom-control-input" value="male" {{ old('gender') === 'male' ? 'checked' : 'checked' }}>
                                                     <label for="gender1" class="custom-control-label">Male</label>
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="custom-control custom-radio">
                                                     <input id="gender2" name="gender" type="radio"
-                                                        class="custom-control-input" value="female"
-                                                        @checked(auth()->check() && auth()?->user()?->gender == 'female')>
-                                                    <label for="gender2" class="custom-control-label"
-                                                        {{ auth()->check() ? auth()?->user()?->dob : old('dob') }}>Female</label>
+                                                        class="custom-control-input" value="female" {{ old('gender') === 'female' ? 'checked' : '' }}>
+                                                    <label for="gender2" class="custom-control-label">Female</label>
                                                 </div>
                                             </div>
                                         </div>
