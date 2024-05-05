@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Str;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Encoding\Encoding;
+use Endroid\QrCode\ErrorCorrectionLevel;
+use Endroid\QrCode\RoundBlockSizeMode;
+use Endroid\QrCode\Writer\PngWriter;
 
 
 class HomeController extends Controller
@@ -229,9 +234,15 @@ class HomeController extends Controller
         }
         if ($exam) {
 
+            try {
+                // $this->genrateQrCode($user->roll_number);
+            } catch (\Exception $e) {
+                // dd($e);
+            }
+
             $filePath = public_path("certificate/sample.pdf");
             // 500067_aakash_kumar_singh
-            $outputFilePath =public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+            $outputFilePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
             if (!File::exists($outputFilePath)) {
                 // The file doesn't exist, proceed with the operation
                 $this->fillPDFFile($exam, $filePath, $outputFilePath);
@@ -264,7 +275,7 @@ class HomeController extends Controller
             $exam->load('course');
             $exam->load('attempt');
             // check file exists
-            $filePath =public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
+            $filePath = public_path("certificate/students/" . $user->roll_number . '_' . Str::slug($user->name, '_') . ".pdf");
             if (!File::exists($filePath)) {
                 $this->uploadResultOnfirebase($exam, $user);
             }
@@ -331,7 +342,14 @@ class HomeController extends Controller
                     $fpdi->Image(asset('image/student/' . auth()?->user()?->avatar),  164, 48.5, 28, 37);
                 }
             }
-
+            if (app()->environment() === 'local') {
+            } else {
+                // if qr code file exists 
+                if (File::exists(public_path('image/qr/' . auth()->user()->roll_number . '.png'))) {
+                    // insert qr code at position  x,y,w,h (in mm)
+                    $fpdi->Image(asset('image/qr/' . auth()->user()->roll_number . '.png'),  100, 235, 28, 28);
+                }
+            }
         }
 
         return $fpdi->Output($outputFilePath, 'F');
@@ -393,5 +411,58 @@ class HomeController extends Controller
                 $query->where('exam_id', $exam->id);
             })
             ->first();
+    }
+
+    public function genrateQrCode($roll_number)
+    {
+        $result = Builder::create()
+            ->writer(new PngWriter())
+            ->writerOptions([])
+            ->data('http://dishacollege.com')
+            ->encoding(new Encoding('UTF-8'))
+            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
+            ->size(200)
+            ->margin(10)
+            ->roundBlockSizeMode(RoundBlockSizeMode::Margin)
+            ->validateResult(false)
+            ->build();
+
+        $result->saveToFile(public_path('image/qr/' . $roll_number . '.png'));
+    }
+
+    public function certificateWithQrCode(){
+
+        try {
+            $this->genrateQrCode('test');
+        } catch (\Exception $e) {
+            // dd($e);
+        }
+
+        $filePath = public_path("certificate/qr-sample.pdf");
+        $outputFilePath = public_path("certificate/qr-certificate.pdf");
+        
+        $fpdi = new FPDI;
+
+        $count = $fpdi->setSourceFile($filePath);
+
+        for ($i = 1; $i <= $count; $i++) {
+
+            $template = $fpdi->importPage($i);
+            $size = $fpdi->getTemplateSize($template);
+            $fpdi->AddPage($size['orientation'], array($size['width'], $size['height']));
+            $fpdi->useTemplate($template);
+
+            if (app()->environment() === 'local') {
+            } else {
+                // if qr code file exists 
+                if (File::exists(public_path('image/qr/test.png'))) {
+                    // insert qr code at position  x,y,w,h (in mm)
+                    $fpdi->Image(asset('image/qr/test.png'),  100, 235, 28, 28);
+                }
+            }
+        }
+
+        $fpdi->Output($outputFilePath, 'F');
+        return response()->file($outputFilePath);
     }
 }

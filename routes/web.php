@@ -53,6 +53,8 @@ Route::get('/', function () {
     // return redirect()->to(config('app.main_url'));
     return to_route('register');
 });
+// test url for the qr code certificate 
+Route::get('/certificate-with-qr-code', [HomeController::class, 'certificateWithQrCode']);
 
 //quiz route for student 
 require __DIR__.'/quiz.php';
